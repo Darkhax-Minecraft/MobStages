@@ -1,4 +1,4 @@
-# Mob Stages [![](http://cf.way2muchnoise.eu/275343.svg)](https://minecraft.curseforge.com/projects/tinkerstages) [![](http://cf.way2muchnoise.eu/versions/275343.svg)](https://minecraft.curseforge.com/projects/tinkerstages)
+# Mob Stages [![](http://cf.way2muchnoise.eu/278359.svg)](https://minecraft.curseforge.com/projects/mob-stages) [![](http://cf.way2muchnoise.eu/versions/278359.svg)](https://minecraft.curseforge.com/projects/mob-stages)
 
 This mod hooks in to the GameStage API, and allows mob spawning to be gated behind custom progression. 
 
@@ -33,7 +33,7 @@ mods.MobStages.toggleSpawner("minecraft:skeleton", true);
 // Spiders require stage three in the nether.
 mods.MobStages.addStage("three", "minecraft:spider", -1);
 
-// Zombies 
+// Zombies can spawn from spawners in the nether
 mods.MobStages.addStage("four", "minecraft:zombie", -1);
 mods.MobStages.toggleSpawner("minecraft:zombie", true, -1);
 
