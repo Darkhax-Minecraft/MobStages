@@ -1,0 +1,16 @@
+[
+{
+  "modid": "mobstages",
+  "name": "Mob Stages",
+  "description": "Allows mob spawning to be gated behind custom progression.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Darkhax"],
+  "credits": "Darkosto for the idea!",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
