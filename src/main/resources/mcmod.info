@@ -5,7 +5,7 @@
   "description": "Allows mob spawning to be gated behind custom progression.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://minecraft.curseforge.com/projects/mob-stages",
   "updateUrl": "",
   "authorList": ["Darkhax"],
   "credits": "Darkosto for the idea!",
