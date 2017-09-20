@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "mobstages", name = "Mob Stages", version = "@VERSION@", dependencies = "required-after:bookshelf@[2.1.441,);required-after:gamestages@[1.0.62,);required-after:crafttweaker@[3.0.25.,)", certificateFingerprint = "@FINGERPRINT@")
+@Mod(modid = "mobstages", name = "Mob Stages", version = "@VERSION@", dependencies = "required-after:bookshelf@[2.1.443,);required-after:gamestages@[1.0.63,);required-after:crafttweaker@[3.0.25.,)", certificateFingerprint = "@FINGERPRINT@")
 public class MobStages {
 
     public static final LoggingHelper LOG = new LoggingHelper("Mob Stages");
