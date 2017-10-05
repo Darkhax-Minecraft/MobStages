@@ -1,4 +1,4 @@
-package net.darkhax.orestages;
+package net.darkhax.mobstages;
 
 import java.util.HashMap;
 import java.util.Map;

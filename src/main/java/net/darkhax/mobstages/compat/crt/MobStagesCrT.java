@@ -1,4 +1,4 @@
-package net.darkhax.orestages.compat.crt;
+package net.darkhax.mobstages.compat.crt;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;

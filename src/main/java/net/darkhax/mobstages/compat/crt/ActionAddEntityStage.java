@@ -1,7 +1,7 @@
-package net.darkhax.orestages.compat.crt;
+package net.darkhax.mobstages.compat.crt;
 
 import crafttweaker.IAction;
-import net.darkhax.orestages.MobStages;
+import net.darkhax.mobstages.MobStages;
 
 public class ActionAddEntityStage implements IAction {
 

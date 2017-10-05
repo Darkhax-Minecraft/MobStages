@@ -1,4 +1,4 @@
-package net.darkhax.orestages;
+package net.darkhax.mobstages;
 
 public class MobStageInfo {
 

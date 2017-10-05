@@ -1,8 +1,8 @@
-package net.darkhax.orestages.compat.crt;
+package net.darkhax.mobstages.compat.crt;
 
 import crafttweaker.IAction;
-import net.darkhax.orestages.MobStageInfo;
-import net.darkhax.orestages.MobStages;
+import net.darkhax.mobstages.MobStageInfo;
+import net.darkhax.mobstages.MobStages;
 
 public class ActionAddSpawnReplacement implements IAction {
 
