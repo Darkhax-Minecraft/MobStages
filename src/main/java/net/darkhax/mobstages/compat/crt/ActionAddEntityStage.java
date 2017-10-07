@@ -32,8 +32,11 @@ public class ActionAddEntityStage implements IAction {
     @Override
     public void apply () {
 
+        MobStages.checkEntity(this.entityId);
+        
         if (this.isDimensional)
             MobStages.getOrCreateStageInfo(this.stage, this.entityId, this.dimension);
+        
         else
             MobStages.getOrCreateStageInfo(this.stage, this.entityId);
     }

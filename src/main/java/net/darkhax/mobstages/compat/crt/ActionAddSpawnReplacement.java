@@ -33,6 +33,7 @@ public class ActionAddSpawnReplacement implements IAction {
     @Override
     public void apply () {
 
+        MobStages.checkEntity(this.entityId);
         final MobStageInfo info = this.isDimensional ? MobStages.DIMENSIONAL_STAGE_INFO.get(this.entityId).get(this.dimension) : MobStages.GLOBAL_STAGE_INFO.get(this.entityId);
         info.setReplacement(this.replacementId);
     }

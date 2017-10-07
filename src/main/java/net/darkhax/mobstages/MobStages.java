@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 @Mod(modid = "mobstages", name = "Mob Stages", version = "@VERSION@", dependencies = "required-after:bookshelf@[2.1.443,);required-after:gamestages@[1.0.63,);required-after:crafttweaker@[3.0.25.,)", certificateFingerprint = "@FINGERPRINT@")
 public class MobStages {
@@ -141,6 +142,14 @@ public class MobStages {
         return false;
     }
 
+    public static void checkEntity(String entityId) {
+        
+        if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(entityId))) {
+            
+            throw new IllegalArgumentException("The entity for id " + entityId + " does not exist. This is an issue!");
+        }
+    }
+    
     @EventHandler
     public void onFingerprintViolation (FMLFingerprintViolationEvent event) {
 
