@@ -34,6 +34,12 @@ public class ActionOverlookSpawners implements IAction {
     public void apply () {
 
         MobStages.checkEntity(this.entityId);
+        
+        if (this.isDimensional && MobStages.DIMENSIONAL_STAGE_INFO.get(this.entityId) == null) {
+        	
+        	throw new IllegalArgumentException("You must stage " + this.entityId + " before spawner can be toggled!");
+        }
+        
         final MobStageInfo info = this.isDimensional ? MobStages.DIMENSIONAL_STAGE_INFO.get(this.entityId).get(this.dimension) : MobStages.GLOBAL_STAGE_INFO.get(this.entityId);
         info.setAllowSpawners(this.ignoreSpawner);
     }
