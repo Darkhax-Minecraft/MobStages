@@ -1,0 +1,20 @@
+modLoader="javafml"
+loaderVersion="[${version_loader},)"
+issueTrackerURL="https://github.com/BrassGoggledCoders/Workshop/issues"
+license="LGPL2.1"
+
+[[mods]]
+    modId="mobstages"
+    version="${mod_version}"
+    displayName="${mod_name}"
+    credits="Darkosto for the idea!"
+    authors="Darkhax"
+    description='''
+        Allows mob spawning to be gated behind custom progression.
+    '''
+[[dependencies.mobstages]]
+    modId="forge"
+    mandatory=true
+    versionRange="[${forge_version},)"
+    ordering="NONE"
+    side="BOTH"
