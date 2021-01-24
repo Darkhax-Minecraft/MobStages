@@ -1,30 +1,33 @@
 package net.darkhax.mobstages;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import net.darkhax.bookshelf.util.EntityUtils;
+import net.darkhax.gamestages.GameStageHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Filter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import crafttweaker.CraftTweakerAPI;
-import net.darkhax.bookshelf.lib.LoggingHelper;
-import net.darkhax.bookshelf.util.EntityUtils;
-import net.darkhax.gamestages.GameStageHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-
-@Mod(modid = "mobstages", name = "Mob Stages", version = "@VERSION@", dependencies = "required-after:bookshelf;required-after:gamestages@[2.0.89,);required-after:crafttweaker", certificateFingerprint = "@FINGERPRINT@")
+@Mod("mobstages")
+@Mod.EventBusSubscriber(modid="mobstages", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class MobStages {
 
-    public static final LoggingHelper LOG = new LoggingHelper("Mob Stages");
+    public static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * A map of global stage info. This is used as a fallback if dimensional specific info does
@@ -37,17 +40,14 @@ public class MobStages {
      * is a second map, where the key is the dimension id, and the value is the info for that.
      * This will override the global data.
      */
-    public static final Map<String, Map<Integer, MobStageInfo>> DIMENSIONAL_STAGE_INFO = new HashMap<>();
+    public static final Map<String, Map<ResourceLocation, MobStageInfo>> DIMENSIONAL_STAGE_INFO = new HashMap<>();
 
-    @Mod.EventHandler
-    public void preInit (FMLPreInitializationEvent ev) {
-
-        MinecraftForge.EVENT_BUS.register(this);
+    public MobStages() {
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener(this::loadComplete);
     }
 
-    @Mod.EventHandler
-    public void onLoadComplete (FMLLoadCompleteEvent event) {
-
+    public void loadComplete(final FMLLoadCompleteEvent event) {
         for (final Entry<String, MobStageInfo> entry : GLOBAL_STAGE_INFO.entrySet()) {
 
             if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(entry.getValue().getEntityId()))) {
@@ -58,7 +58,7 @@ public class MobStages {
 
         for (final String stage : DIMENSIONAL_STAGE_INFO.keySet()) {
 
-            for (final Entry<Integer, MobStageInfo> entry : DIMENSIONAL_STAGE_INFO.get(stage).entrySet()) {
+            for (final Entry<ResourceLocation, MobStageInfo> entry : DIMENSIONAL_STAGE_INFO.get(stage).entrySet()) {
 
                 if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(entry.getValue().getEntityId()))) {
 
@@ -76,9 +76,9 @@ public class MobStages {
         return info;
     }
 
-    public static MobStageInfo getOrCreateStageInfo (String stage, String entity, int dimension) {
+    public static MobStageInfo getOrCreateStageInfo (String stage, String entity, ResourceLocation dimension) {
 
-        final Map<Integer, MobStageInfo> map = DIMENSIONAL_STAGE_INFO.getOrDefault(entity, new HashMap<>());
+        final Map<ResourceLocation, MobStageInfo> map = DIMENSIONAL_STAGE_INFO.getOrDefault(entity, new HashMap<>());
         final MobStageInfo info = map.getOrDefault(dimension, new MobStageInfo(stage, entity, dimension));
 
         map.put(dimension, info);
@@ -91,29 +91,28 @@ public class MobStages {
         return GLOBAL_STAGE_INFO.get(entityId) != null;
     }
 
-    public static boolean hasDimensionStage (String entityId, int dimension) {
+    public static boolean hasDimensionStage (String entityId, ResourceLocation dimension) {
 
         return DIMENSIONAL_STAGE_INFO.containsKey(entityId) && DIMENSIONAL_STAGE_INFO.get(entityId).get(dimension) != null;
     }
 
     @SubscribeEvent
-    public void checkSpawn (CheckSpawn event) {
-
-        final ResourceLocation id = EntityList.getKey(event.getEntity());
+    public static void checkSpawn (CheckSpawn event) {
+        final ResourceLocation id = ForgeRegistries.ENTITIES.getKey(event.getEntity().getType());
 
         if (id != null) {
 
             final String name = id.toString();
-            final int dimension = event.getEntity().dimension;
+            final ResourceLocation dimension = event.getEntity().getEntityWorld().getDimensionKey().getRegistryName();
 
-            MobStageInfo info = null;
+            MobStageInfo info;
 
             if (hasDimensionStage(name, dimension)) {
 
                 info = DIMENSIONAL_STAGE_INFO.get(name).get(dimension);
 
                 if (!allowSpawning(info, event)) {
-                    return;
+                   return;
                 }
             }
 
@@ -138,7 +137,7 @@ public class MobStages {
             }
 
             // Checks if players have the needed stage
-            for (final EntityPlayer player : event.getWorld().playerEntities) {
+            for (final PlayerEntity player : event.getWorld().getPlayers()) {
 
                 if (GameStageHelper.hasStage(player, info.getStage()) && EntityUtils.getDistanceFromEntity(player, event.getEntity()) < info.getRange()) {
                     return true;
@@ -146,23 +145,25 @@ public class MobStages {
             }
 
             // If a replacement exists, spawn it.
-            if (info.getReplacement() != null && !info.getReplacement().isEmpty()) {
+            if (info.getReplacement() != null && !info.getReplacement().isEmpty() && event.getWorld() instanceof World) {
                 try {
 
-                    final Entity entity = EntityList.createEntityByIDFromName(new ResourceLocation(info.getReplacement()), event.getWorld());
-                    entity.setPosition(event.getX(), event.getY(), event.getZ());
-                    event.getWorld().spawnEntity(entity);
-                    event.getEntity().setDead();
+                    final Entity entity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(info.getReplacement())).create((World) event.getWorld());
+                    if(entity != null) {
+                        entity.setPosition(event.getX(), event.getY(), event.getZ());
+                        event.getWorld().addEntity(entity);
+                    }
+                    event.getEntity().remove();
                 }
 
                 catch (final Exception e) {
 
-                    MobStages.LOG.trace("Failed to spawn replacement mob!", e);
+                    LOGGER.trace("Failed to spawn replacement mob!", e);
                 }
             }
         }
 
-        event.setResult(Result.DENY);
+        event.setResult(Event.Result.DENY);
         return false;
     }
 }

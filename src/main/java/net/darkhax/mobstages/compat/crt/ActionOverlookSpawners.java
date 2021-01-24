@@ -1,8 +1,10 @@
 package net.darkhax.mobstages.compat.crt;
 
-import crafttweaker.IAction;
+import com.blamejared.crafttweaker.api.actions.IAction;
 import net.darkhax.mobstages.MobStageInfo;
 import net.darkhax.mobstages.MobStages;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.DimensionType;
 
 public class ActionOverlookSpawners implements IAction {
 
@@ -10,19 +12,19 @@ public class ActionOverlookSpawners implements IAction {
     private final boolean ignoreSpawner;
 
     private final boolean isDimensional;
-    private final int dimension;
+    private final String dimension;
 
     public ActionOverlookSpawners (String entity, boolean ignoreSpawner) {
 
-        this(entity, ignoreSpawner, 0, false);
+        this(entity, ignoreSpawner, DimensionType.OVERWORLD_ID.toString(), false);
     }
 
-    public ActionOverlookSpawners (String entity, boolean ignoreSpawner, int dimension) {
+    public ActionOverlookSpawners (String entity, boolean ignoreSpawner, String dimension) {
 
         this(entity, ignoreSpawner, dimension, true);
     }
 
-    private ActionOverlookSpawners (String entity, boolean ignoreSpawner, int dimension, boolean isDimensional) {
+    private ActionOverlookSpawners (String entity, boolean ignoreSpawner, String dimension, boolean isDimensional) {
 
         this.entityId = entity;
         this.ignoreSpawner = ignoreSpawner;
@@ -38,7 +40,7 @@ public class ActionOverlookSpawners implements IAction {
             throw new IllegalArgumentException("You must stage " + this.entityId + " before spawner can be toggled!");
         }
 
-        final MobStageInfo info = this.isDimensional ? MobStages.DIMENSIONAL_STAGE_INFO.get(this.entityId).get(this.dimension) : MobStages.GLOBAL_STAGE_INFO.get(this.entityId);
+        final MobStageInfo info = this.isDimensional ? MobStages.DIMENSIONAL_STAGE_INFO.get(this.entityId).get(new ResourceLocation(this.dimension)) : MobStages.GLOBAL_STAGE_INFO.get(this.entityId);
         info.setAllowSpawners(this.ignoreSpawner);
     }
 

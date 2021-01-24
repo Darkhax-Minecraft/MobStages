@@ -1,58 +1,57 @@
 package net.darkhax.mobstages.compat.crt;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.annotations.ZenRegister;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenClass("mods.MobStages")
+@ZenCodeType.Name("mods.MobStages")
 public class MobStagesCrT {
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void addStage (String stage, String entityId) {
 
         CraftTweakerAPI.apply(new ActionAddEntityStage(stage, entityId));
     }
 
-    @ZenMethod
-    public static void addStage (String stage, String entityId, int dimension) {
+    @ZenCodeType.Method
+    public static void addStage (String stage, String entityId, String dimension) {
 
         CraftTweakerAPI.apply(new ActionAddEntityStage(stage, entityId, dimension));
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void addReplacement (String entityId, String replacementId) {
 
         CraftTweakerAPI.apply(new ActionAddSpawnReplacement(entityId, replacementId));
     }
 
-    @ZenMethod
-    public static void addReplacement (String entityId, String replacementId, int dimension) {
+    @ZenCodeType.Method
+    public static void addReplacement (String entityId, String replacementId, String dimension) {
 
         CraftTweakerAPI.apply(new ActionAddSpawnReplacement(entityId, replacementId, dimension));
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void addRange (String entityId, int range) {
 
         CraftTweakerAPI.apply(new ActionAddSpawnRange(entityId, range));
     }
 
-    @ZenMethod
-    public static void addReplacement (String entityId, int range, int dimension) {
+    @ZenCodeType.Method
+    public static void addReplacement (String entityId, int range, String dimension) {
 
         CraftTweakerAPI.apply(new ActionAddSpawnRange(entityId, range, dimension));
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void toggleSpawner (String entityId, boolean allow) {
 
         CraftTweakerAPI.apply(new ActionOverlookSpawners(entityId, allow));
     }
 
-    @ZenMethod
-    public static void toggleSpawner (String entityId, boolean allow, int dimension) {
+    @ZenCodeType.Method
+    public static void toggleSpawner (String entityId, boolean allow, String dimension) {
 
         CraftTweakerAPI.apply(new ActionOverlookSpawners(entityId, allow, dimension));
     }

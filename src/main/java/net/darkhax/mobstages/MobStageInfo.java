@@ -1,20 +1,23 @@
 package net.darkhax.mobstages;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.DimensionType;
+
 public class MobStageInfo {
 
     private String stage;
     private String entityId;
     private int range;
-    private int dimension;
+    private ResourceLocation dimension;
     private boolean allowSpawners;
     private String replacement;
 
     public MobStageInfo (String stage, String entityId) {
 
-        this(stage, entityId, 0);
+        this(stage, entityId, DimensionType.OVERWORLD_ID);
     }
 
-    public MobStageInfo (String stage, String entityId, int dimension) {
+    public MobStageInfo (String stage, String entityId, ResourceLocation dimension) {
 
         this.stage = stage;
         this.entityId = entityId;
@@ -40,7 +43,7 @@ public class MobStageInfo {
         return this.range;
     }
 
-    public int getDimension () {
+    public ResourceLocation getDimension () {
 
         return this.dimension;
     }
@@ -75,7 +78,7 @@ public class MobStageInfo {
         this.range = range;
     }
 
-    public void setDimension (int dimension) {
+    public void setDimension (ResourceLocation dimension) {
 
         this.dimension = dimension;
     }

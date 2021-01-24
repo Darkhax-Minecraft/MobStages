@@ -1,8 +1,10 @@
 package net.darkhax.mobstages.compat.crt;
 
-import crafttweaker.IAction;
+import com.blamejared.crafttweaker.api.actions.IAction;
 import net.darkhax.mobstages.MobStageInfo;
 import net.darkhax.mobstages.MobStages;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.DimensionType;
 
 public class ActionAddSpawnRange implements IAction {
 
@@ -10,19 +12,19 @@ public class ActionAddSpawnRange implements IAction {
     private final int range;
 
     private final boolean isDimensional;
-    private final int dimension;
+    private final String dimension;
 
     public ActionAddSpawnRange (String entity, int range) {
 
-        this(entity, range, 0, false);
+        this(entity, range, DimensionType.OVERWORLD_ID.toString(), false);
     }
 
-    public ActionAddSpawnRange (String entity, int range, int dimension) {
+    public ActionAddSpawnRange (String entity, int range, String dimension) {
 
         this(entity, range, dimension, true);
     }
 
-    private ActionAddSpawnRange (String entity, int range, int dimension, boolean isDimensional) {
+    private ActionAddSpawnRange (String entity, int range, String dimension, boolean isDimensional) {
 
         this.entityId = entity;
         this.range = range;
@@ -33,7 +35,7 @@ public class ActionAddSpawnRange implements IAction {
     @Override
     public void apply () {
 
-        final MobStageInfo info = this.isDimensional ? MobStages.DIMENSIONAL_STAGE_INFO.get(this.entityId).get(this.dimension) : MobStages.GLOBAL_STAGE_INFO.get(this.entityId);
+        final MobStageInfo info = this.isDimensional ? MobStages.DIMENSIONAL_STAGE_INFO.get(this.entityId).get(new ResourceLocation(this.dimension)) : MobStages.GLOBAL_STAGE_INFO.get(this.entityId);
         info.setRange(this.range);
     }
 

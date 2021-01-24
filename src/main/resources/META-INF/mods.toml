@@ -6,7 +6,7 @@ license="LGPL2.1"
 [[mods]]
     modId="mobstages"
     version="${mod_version}"
-    displayName="${mod_name}"
+    displayName="Game Stages"
     credits="Darkosto for the idea!"
     authors="Darkhax"
     description='''
@@ -15,6 +15,6 @@ license="LGPL2.1"
 [[dependencies.mobstages]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},)"
+    versionRange="[${version_forge},)"
     ordering="NONE"
     side="BOTH"
