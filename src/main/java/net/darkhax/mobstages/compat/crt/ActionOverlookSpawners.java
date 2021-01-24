@@ -1,30 +1,32 @@
 package net.darkhax.mobstages.compat.crt;
 
 import com.blamejared.crafttweaker.api.actions.IAction;
+import com.blamejared.crafttweaker.impl.entity.MCEntityType;
 import net.darkhax.mobstages.MobStageInfo;
 import net.darkhax.mobstages.MobStages;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
 
 public class ActionOverlookSpawners implements IAction {
 
-    private final String entityId;
+    private final EntityType<?> entityId;
     private final boolean ignoreSpawner;
 
     private final boolean isDimensional;
     private final String dimension;
 
-    public ActionOverlookSpawners (String entity, boolean ignoreSpawner) {
+    public ActionOverlookSpawners (EntityType<?> entity, boolean ignoreSpawner) {
 
         this(entity, ignoreSpawner, DimensionType.OVERWORLD_ID.toString(), false);
     }
 
-    public ActionOverlookSpawners (String entity, boolean ignoreSpawner, String dimension) {
+    public ActionOverlookSpawners (EntityType<?> entity, boolean ignoreSpawner, String dimension) {
 
         this(entity, ignoreSpawner, dimension, true);
     }
 
-    private ActionOverlookSpawners (String entity, boolean ignoreSpawner, String dimension, boolean isDimensional) {
+    private ActionOverlookSpawners (EntityType<?> entity, boolean ignoreSpawner, String dimension, boolean isDimensional) {
 
         this.entityId = entity;
         this.ignoreSpawner = ignoreSpawner;

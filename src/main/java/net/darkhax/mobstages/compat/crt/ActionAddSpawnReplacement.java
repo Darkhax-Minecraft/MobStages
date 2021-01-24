@@ -3,28 +3,29 @@ package net.darkhax.mobstages.compat.crt;
 import com.blamejared.crafttweaker.api.actions.IAction;
 import net.darkhax.mobstages.MobStageInfo;
 import net.darkhax.mobstages.MobStages;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
 
 public class ActionAddSpawnReplacement implements IAction {
 
-    private final String entityId;
-    private final String replacementId;
+    private final EntityType<?> entityId;
+    private final EntityType<?> replacementId;
 
     private final boolean isDimensional;
     private final String dimension;
 
-    public ActionAddSpawnReplacement (String entity, String replacement) {
+    public ActionAddSpawnReplacement (EntityType<?> entity, EntityType<?> replacement) {
 
         this(entity, replacement, DimensionType.OVERWORLD_ID.toString(), false);
     }
 
-    public ActionAddSpawnReplacement (String entity, String replacement, String dimension) {
+    public ActionAddSpawnReplacement (EntityType<?> entity, EntityType<?> replacement, String dimension) {
 
         this(entity, replacement, dimension, true);
     }
 
-    private ActionAddSpawnReplacement (String entity, String replacement, String dimension, boolean isDimensional) {
+    private ActionAddSpawnReplacement (EntityType<?> entity, EntityType<?> replacement, String dimension, boolean isDimensional) {
 
         this.entityId = entity;
         this.replacementId = replacement;

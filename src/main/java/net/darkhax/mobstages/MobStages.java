@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import net.darkhax.bookshelf.util.EntityUtils;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -33,16 +34,16 @@ public class MobStages {
      * A map of global stage info. This is used as a fallback if dimensional specific info does
      * not exist. The key is the mob's id, and the value is the stage info for that mob.
      */
-    public static final Map<String, MobStageInfo> GLOBAL_STAGE_INFO = new HashMap<>();
+    public static final Map<EntityType<?>, MobStageInfo> GLOBAL_STAGE_INFO = new HashMap<>();
 
     /**
      * A map of dimension specific mob spawning stage data. The key is the entity id. The value
      * is a second map, where the key is the dimension id, and the value is the info for that.
      * This will override the global data.
      */
-    public static final Map<String, Map<ResourceLocation, MobStageInfo>> DIMENSIONAL_STAGE_INFO = new HashMap<>();
+    public static final Map<EntityType<?>, Map<ResourceLocation, MobStageInfo>> DIMENSIONAL_STAGE_INFO = new HashMap<>();
 
-    public static MobStageInfo getOrCreateStageInfo (String stage, String entity) {
+    public static MobStageInfo getOrCreateStageInfo (String stage, EntityType<?> entity) {
 
         final MobStageInfo info = GLOBAL_STAGE_INFO.getOrDefault(entity, new MobStageInfo(stage, entity));
 
@@ -50,7 +51,7 @@ public class MobStages {
         return info;
     }
 
-    public static MobStageInfo getOrCreateStageInfo (String stage, String entity, ResourceLocation dimension) {
+    public static MobStageInfo getOrCreateStageInfo (String stage, EntityType<?> entity, ResourceLocation dimension) {
 
         final Map<ResourceLocation, MobStageInfo> map = DIMENSIONAL_STAGE_INFO.getOrDefault(entity, new HashMap<>());
         final MobStageInfo info = map.getOrDefault(dimension, new MobStageInfo(stage, entity, dimension));
@@ -60,39 +61,38 @@ public class MobStages {
         return info;
     }
 
-    public static boolean hasGlobalStage (String entityId) {
+    public static boolean hasGlobalStage (EntityType<?> entityId) {
 
         return GLOBAL_STAGE_INFO.get(entityId) != null;
     }
 
-    public static boolean hasDimensionStage (String entityId, ResourceLocation dimension) {
+    public static boolean hasDimensionStage (EntityType<?> entityId, ResourceLocation dimension) {
 
         return DIMENSIONAL_STAGE_INFO.containsKey(entityId) && DIMENSIONAL_STAGE_INFO.get(entityId).get(dimension) != null;
     }
 
     @SubscribeEvent
     public static void checkSpawn (CheckSpawn event) {
-        final ResourceLocation id = ForgeRegistries.ENTITIES.getKey(event.getEntity().getType());
 
-        if (id != null) {
+        if (event.getEntity() != null) {
 
-            final String name = id.toString();
+            final EntityType<?> entityType = event.getEntity().getType();
             final ResourceLocation dimension = event.getEntity().getEntityWorld().getDimensionKey().getRegistryName();
 
             MobStageInfo info;
 
-            if (hasDimensionStage(name, dimension)) {
+            if (hasDimensionStage(entityType, dimension)) {
 
-                info = DIMENSIONAL_STAGE_INFO.get(name).get(dimension);
+                info = DIMENSIONAL_STAGE_INFO.get(entityType).get(dimension);
 
                 if (!allowSpawning(info, event)) {
                    return;
                 }
             }
 
-            if (hasGlobalStage(name)) {
+            if (hasGlobalStage(entityType)) {
 
-                info = GLOBAL_STAGE_INFO.get(name);
+                info = GLOBAL_STAGE_INFO.get(entityType);
 
                 if (!allowSpawning(info, event)) {
                     return;
@@ -119,10 +119,10 @@ public class MobStages {
             }
 
             // If a replacement exists, spawn it.
-            if (info.getReplacement() != null && !info.getReplacement().isEmpty() && event.getWorld() instanceof World) {
+            if (info.getReplacement() != null && event.getWorld() instanceof World) {
                 try {
 
-                    final Entity entity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(info.getReplacement())).create((World) event.getWorld());
+                    final Entity entity = info.getReplacement().create((World) event.getWorld());
                     if(entity != null) {
                         entity.setPosition(event.getX(), event.getY(), event.getZ());
                         event.getWorld().addEntity(entity);

@@ -3,28 +3,29 @@ package net.darkhax.mobstages.compat.crt;
 import com.blamejared.crafttweaker.api.actions.IAction;
 import net.darkhax.mobstages.MobStageInfo;
 import net.darkhax.mobstages.MobStages;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
 
 public class ActionAddSpawnRange implements IAction {
 
-    private final String entityId;
+    private final EntityType<?> entityId;
     private final int range;
 
     private final boolean isDimensional;
     private final String dimension;
 
-    public ActionAddSpawnRange (String entity, int range) {
+    public ActionAddSpawnRange (EntityType<?> entity, int range) {
 
         this(entity, range, DimensionType.OVERWORLD_ID.toString(), false);
     }
 
-    public ActionAddSpawnRange (String entity, int range, String dimension) {
+    public ActionAddSpawnRange (EntityType<?> entity, int range, String dimension) {
 
         this(entity, range, dimension, true);
     }
 
-    private ActionAddSpawnRange (String entity, int range, String dimension, boolean isDimensional) {
+    private ActionAddSpawnRange (EntityType<?> entity, int range, String dimension, boolean isDimensional) {
 
         this.entityId = entity;
         this.range = range;
