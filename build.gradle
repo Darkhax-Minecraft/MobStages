@@ -42,7 +42,7 @@ minecraft {
             properties 'mixin.env.disableRefMap': 'true'
 
             mods {
-                transport {
+                mobstages {
                     source(sourceSets.main)
                 }
             }
@@ -54,7 +54,7 @@ minecraft {
             properties 'mixin.env.disableRefMap': 'true'
 
             mods {
-                transport {
+                mobstages {
                     source(sourceSets.main)
                 }
             }
