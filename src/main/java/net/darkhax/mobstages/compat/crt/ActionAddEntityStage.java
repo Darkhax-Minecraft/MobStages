@@ -1,9 +1,11 @@
 package net.darkhax.mobstages.compat.crt;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.actions.IAction;
 import net.darkhax.mobstages.MobStages;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ActionAddEntityStage implements IAction {
 
@@ -33,7 +35,9 @@ public class ActionAddEntityStage implements IAction {
 
     @Override
     public void apply () {
-
+        if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(this.entityId))) {
+            CraftTweakerAPI.logError("No entity found for " + this.entityId);
+        }
         if (this.isDimensional) {
             MobStages.getOrCreateStageInfo(this.stage, this.entityId, new ResourceLocation(this.dimension));
         }

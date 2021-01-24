@@ -42,32 +42,6 @@ public class MobStages {
      */
     public static final Map<String, Map<ResourceLocation, MobStageInfo>> DIMENSIONAL_STAGE_INFO = new HashMap<>();
 
-    public MobStages() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modBus.addListener(this::loadComplete);
-    }
-
-    public void loadComplete(final FMLLoadCompleteEvent event) {
-        for (final Entry<String, MobStageInfo> entry : GLOBAL_STAGE_INFO.entrySet()) {
-
-            if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(entry.getValue().getEntityId()))) {
-
-                CraftTweakerAPI.logError("No entity found for " + entry.getValue().getEntityId());
-            }
-        }
-
-        for (final String stage : DIMENSIONAL_STAGE_INFO.keySet()) {
-
-            for (final Entry<ResourceLocation, MobStageInfo> entry : DIMENSIONAL_STAGE_INFO.get(stage).entrySet()) {
-
-                if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(entry.getValue().getEntityId()))) {
-
-                    CraftTweakerAPI.logError("No entity found for " + entry.getValue().getEntityId());
-                }
-            }
-        }
-    }
-
     public static MobStageInfo getOrCreateStageInfo (String stage, String entity) {
 
         final MobStageInfo info = GLOBAL_STAGE_INFO.getOrDefault(entity, new MobStageInfo(stage, entity));
