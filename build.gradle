@@ -1,30 +1,22 @@
 buildscript {
 
     repositories {
-    
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        
-        maven { 
-        
-            url = 'http://files.minecraftforge.net/maven'
-        }
-        
-        maven {
-
-            url 'https://plugins.gradle.org/m2/'
-        }
+        mavenCentral()
     }
-    
+
     dependencies {
-    
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.1.0'
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: 'maven-publish' 
+plugins {
+  id "com.matthewprenger.cursegradle" version "1.4.0"
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'maven-publish'
 
 apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/generic/secrets.gradle'
 apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/generic/patreon.gradle'
@@ -41,14 +33,33 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
+    mappings channel: "snapshot", version: "${version_mcp}"
 
-    version = "${version_minecraft}-${version_forge}"
-    mappings = "${version_mcp}"
-    runDir = 'run'
-    
-    replace '@VERSION@', project.version
-    replace '@FINGERPRINT@', project.findProperty('signSHA1')
-    replaceIn "${mod_class}.java"
+    runs {
+        client {
+            workingDirectory file("run")
+
+            properties 'mixin.env.disableRefMap': 'true'
+
+            mods {
+                mobstages {
+                    source(sourceSets.main)
+                }
+            }
+        }
+
+        server {
+            workingDirectory file("run")
+
+            properties 'mixin.env.disableRefMap': 'true'
+
+            mods {
+                mobstages {
+                    source(sourceSets.main)
+                }
+            }
+        }
+    }
 }
 
 repositories {
@@ -57,43 +68,43 @@ repositories {
 
         url 'https://maven.mcmoddev.com'
     }
-    
+
     maven {
-    
+
         url 'http://tehnut.info/maven'
     }
-    
+
     maven {
-    
+
         url 'http://maven.blamejared.com'
     }
 }
 
 dependencies {
-
-    deobfProvided "net.darkhax.bookshelf:Bookshelf-1.12.2:${version_bookshelf}"
-    deobfProvided "net.darkhax.gamestages:GameStages-1.12.2:${version_gamestages}"
-    deobfProvided "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${version_minetweaker}"
-    deobfProvided "mcp.mobius.waila:Hwyla:${version_hwyla}"
+    minecraft "net.minecraftforge:forge:${version_forge}"
+    compile fg.deobf("net.darkhax.bookshelf:Bookshelf-1.16.5:${version_bookshelf}")
+    compile fg.deobf("net.darkhax.gamestages:GameStages-1.16.4:${version_gamestages}")
+    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-1.16.5:${version_minetweaker}")
+    //compile fg.deobf("mcp.mobius.waila:Hwyla:${version_hwyla}")
 }
 
+def version_properties = [
+        "mod_version": mod_version,
+        "version_forge" : version_forge,
+        "version_loader": version_loader
+]
+
 processResources {
-
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-    
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+    outputs.upToDateWhen { false }
+    def modsToml = copySpec {
+        from(sourceSets.main.resources) {
+            include "META-INF/mods.toml"
+            expand version_properties
+        }
     }
-        
-    from(sourceSets.main.resources.srcDirs) {
-    
-        exclude 'mcmod.info'
-    }
-    
-    from 'LICENSE'
+    //Copy it into the build dir
+    with modsToml
+    into "$buildDir/resources/main/"
 }
 
 String getBuildNumber() {
@@ -115,7 +126,7 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 curseforge {
 
-    apiKey = findProperty('curse_auth') ?: 0 
+    apiKey = findProperty('curse_auth') ?: 0
     def versions = "${curse_versions}".split(', ')
 
     project {
@@ -161,14 +172,13 @@ curseforge {
     }
 }
 
-
 task signJar(type: SignJar, dependsOn: reobfJar) {
 
     onlyIf {
-    
+
         project.hasProperty('keyStore')
     }
-    
+
     keyStore = project.findProperty('keyStore')
     alias = project.findProperty('keyStoreAlias')
     storePass = project.findProperty('keyStorePass')

@@ -1,20 +1,24 @@
 package net.darkhax.mobstages;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.DimensionType;
+
 public class MobStageInfo {
 
     private String stage;
-    private String entityId;
+    private EntityType<?> entityId;
     private int range;
-    private int dimension;
+    private ResourceLocation dimension;
     private boolean allowSpawners;
-    private String replacement;
+    private EntityType<?> replacement;
 
-    public MobStageInfo (String stage, String entityId) {
+    public MobStageInfo (String stage, EntityType<?> entityId) {
 
-        this(stage, entityId, 0);
+        this(stage, entityId, DimensionType.OVERWORLD_ID);
     }
 
-    public MobStageInfo (String stage, String entityId, int dimension) {
+    public MobStageInfo (String stage, EntityType<?> entityId, ResourceLocation dimension) {
 
         this.stage = stage;
         this.entityId = entityId;
@@ -22,7 +26,6 @@ public class MobStageInfo {
         this.range = 256;
         this.dimension = dimension;
         this.allowSpawners = false;
-        this.replacement = "";
     }
 
     public String getStage () {
@@ -30,7 +33,7 @@ public class MobStageInfo {
         return this.stage;
     }
 
-    public String getEntityId () {
+    public EntityType<?> getEntityId () {
 
         return this.entityId;
     }
@@ -40,7 +43,7 @@ public class MobStageInfo {
         return this.range;
     }
 
-    public int getDimension () {
+    public ResourceLocation getDimension () {
 
         return this.dimension;
     }
@@ -65,7 +68,7 @@ public class MobStageInfo {
         this.stage = stage;
     }
 
-    public void setEntityId (String entityId) {
+    public void setEntityId (EntityType<?> entityId) {
 
         this.entityId = entityId;
     }
@@ -75,17 +78,17 @@ public class MobStageInfo {
         this.range = range;
     }
 
-    public void setDimension (int dimension) {
+    public void setDimension (ResourceLocation dimension) {
 
         this.dimension = dimension;
     }
 
-    public String getReplacement () {
+    public EntityType<?> getReplacement () {
 
         return this.replacement;
     }
 
-    public void setReplacement (String replacement) {
+    public void setReplacement (EntityType<?> replacement) {
 
         this.replacement = replacement;
     }
